@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const colors = require('colors')
 const dotenv = require('dotenv').config()
@@ -15,6 +16,13 @@ app.use(express.urlencoded({extended: false}))
 
 app.use('/api/goals', require('./routes/goalRoutes'))
 app.use('/api/users', require('./routes/userRoutes'))
+
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../front-end/build')))
+
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, '../', 'front-end', 'build', 'index.html')))
+}
 
 app.use(errorHandler)
 
